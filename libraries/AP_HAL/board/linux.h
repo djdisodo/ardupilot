@@ -337,6 +337,22 @@
     #define HAL_BUZZER_PIN                12 // You can choose between 27,22,4,12
     #define OBAL_ALLOW_ADC                1
 
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ASTROLUCKFOX
+// 하드웨어 추가 
+// GY-86
+#define HAL_BARO_PROBE_LIST PROBE_BARO_I2C(MS56XX, 3, 0x77, AP_Baro_MS56XX::BARO_MS5607)
+//mpu6050
+#define HAL_INS_PROBE_LIST PROBE_IMU_I2C(Invensense, 3, 0x68, ROTATION_NONE)
+#define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 3, 0x0d, true, ROTATION_NONE)
+
+// voltage monitor
+#define HAL_BATT_VOLT_PIN 0
+#define HAL_BATT_CURR_PIN 1
+#define HAL_BATT_VOLT_SCALE 11.0f
+#define HAL_BATT_CURR_SCALE 0.0f
+
+
+
 #else
     #error "no Linux board subtype set"
 #endif
