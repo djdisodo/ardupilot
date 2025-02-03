@@ -132,7 +132,7 @@ void Scheduler::init()
         const struct sched_table *t = &sched_table[i];
 
         t->thread->set_rate(t->rate);
-        t->thread->set_stack_size(1024 * 1024);
+        t->thread->set_stack_size(16 * 1024);
         t->thread->start(t->name, t->policy, t->prio);
     }
 
@@ -416,7 +416,7 @@ bool Scheduler::thread_create(AP_HAL::MemberProc proc, const char *name, uint32_
     const uint8_t thread_priority = calculate_thread_priority(base, priority);
 
     // Add 256k to HAL-independent requested stack size
-    thread->set_stack_size(256 * 1024 + stack_size);
+    thread->set_stack_size(16 * 1024 + stack_size);
 
     /*
      * We should probably store the thread handlers and join() when exiting,
