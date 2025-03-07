@@ -111,7 +111,8 @@ static AnalogIn_ADS1115 analogIn;
       CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ERLEBOARD || \
       CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_BBBMINI || \
       CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_BLUE || \
-      CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_POCKET
+      CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_POCKET || \
+      CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ASTROLFP
 static AnalogIn_IIO analogIn;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_NAVIO2 || \
       CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_EDGE
@@ -219,6 +220,17 @@ static RCOutput_Sysfs rcoutDriver(0, 0, 8);
 static RCOutput_PCA9685 rcoutDriver(i2c_mgr_instance.get_device(1, PCA9685_PRIMARY_ADDRESS), 0, 0, RPI_GPIO_<17>());
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_CANZERO
 static RCOutput_Sysfs rcoutDriver(0, 0, 2);
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ASTROLFP
+static RCOutput_Sysfs_Table rcoutDriver((RCOutput_Sysfs_Table::ch_t []){
+	{ .chip = 11, .channel = 0 },
+	{ .chip = 10, .channel = 0 },
+	{ .chip = 0, .channel = 0 },
+	{ .chip = 2, .channel = 0 },
+	{ .chip = 4, .channel = 0 },
+	{ .chip = 5, .channel = 0 },
+	{ .chip = 6, .channel = 0 },
+	{ .chip = 1, .channel = 0 },
+}, 8);
 #else
 static Empty::RCOutput rcoutDriver;
 #endif
