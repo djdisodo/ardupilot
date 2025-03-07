@@ -36,6 +36,7 @@
 #include "RCOutput_PCA9685.h"
 #include "RCOutput_PRU.h"
 #include "RCOutput_Sysfs.h"
+#include "RCOutput_Sysfs_Table.h"
 #include "RCOutput_ZYNQ.h"
 #include "SPIDevice.h"
 #include "SPIUARTDriver.h"
