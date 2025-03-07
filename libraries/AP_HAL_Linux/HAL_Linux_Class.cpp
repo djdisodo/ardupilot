@@ -245,10 +245,13 @@ static RCOutput_Sysfs rcoutDriver(0, 0, 2);
 static RCOutput_Sysfs_Table rcoutDriver((RCOutput_Sysfs_Table::ch_t []){
 	{ .chip = 11, .channel = 0 },
 	{ .chip = 10, .channel = 0 },
+	{ .chip = 0, .channel = 0 },
+	{ .chip = 2, .channel = 0 },
+	{ .chip = 4, .channel = 0 },
 	{ .chip = 5, .channel = 0 },
 	{ .chip = 6, .channel = 0 },
 	{ .chip = 1, .channel = 0 },
-}, 5);
+}, 8);
 #else
 static Empty::RCOutput rcoutDriver;
 #endif
