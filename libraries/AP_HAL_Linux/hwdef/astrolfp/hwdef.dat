@@ -1,0 +1,22 @@
+# AstroLFP
+
+# IMUs:
+IMU Invensense I2C:3:0x68 ROTATION_NONE
+define INS_MAX_INSTANCES 3
+
+# Compasses:
+COMPASS QMC5883L I2C:3:0x0d true ROTATION_NONE
+define HAL_PROBE_EXTERNAL_I2C_COMPASSES
+
+# Baros:
+BARO MS56XX I2C:3:0x77 AP_Baro_MS56XX::BARO_MS5607
+
+define HAL_BATT_VOLT_PIN                  0
+define HAL_BATT_CURR_PIN                  1
+define HAL_BATT_VOLT_SCALE                11.0f
+define HAL_BATT_CURR_SCALE                0.0f
+
+// FIXME: use of this define should go away:
+define CONFIG_HAL_BOARD_SUBTYPE HAL_BOARD_SUBTYPE_LINUX_ASTROLFP
+
+env TOOLCHAIN arm-linux-musleabihf
