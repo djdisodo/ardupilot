@@ -47,6 +47,8 @@
 #include "Util_RPI.h"
 #include "CANSocketIface.h"
 
+#include "RCOutput_virtual.h"
+
 using namespace Linux;
 
 #if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_NAVIO || \
@@ -241,7 +243,8 @@ static RCOutput_Sysfs_Table rcoutDriver((RCOutput_Sysfs_Table::ch_t []){
 	{ .chip = 1, .channel = 0 },
 }, 8);
 #else
-static Empty::RCOutput rcoutDriver;
+static IOMCU2::RCOutput_virtual rcoutDriver;
+//static Empty::RCOutput rcoutDriver;
 #endif
 
 static Scheduler schedulerInstance;
@@ -481,6 +484,7 @@ void HAL_Linux::run(int argc, char* const argv[], Callbacks* callbacks) const
     serial(0)->begin(115200);
     analogin->init();
     utilInstance.init(argc+gopt.optind-1, &argv[gopt.optind-1]);
+    ///
 
     // NOTE: See commit 9f5b4ffca ("AP_HAL_Linux_Class: Correct
     // deadlock, and infinite loop in setup()") for details about the

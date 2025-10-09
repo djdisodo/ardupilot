@@ -88,6 +88,8 @@ public:
     virtual const char *get_device_name(uint8_t idx) { return nullptr; }
 
     virtual void set_register_rw_callback(const char* name, AP_HAL::Device::RegisterRWCb cb) {}
+
+    void get_device();
 };
 
 }

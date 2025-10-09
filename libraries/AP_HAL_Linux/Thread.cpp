@@ -22,6 +22,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <utility>
+#include <time.h>
+#include <errno.h>
+
 
 #include <AP_HAL/AP_HAL.h>
 #include <AP_Math/AP_Math.h>
@@ -250,30 +253,43 @@ bool Thread::set_stack_size(size_t stack_size)
     return true;
 }
 
+static inline void add_us(struct timespec &ts, uint64_t us)
+{
+    ts.tv_nsec += (us % 1000000ULL) * 1000ULL;
+    ts.tv_sec  += us / 1000000ULL;
+    while (ts.tv_nsec >= 1000000000L) {
+        ts.tv_nsec -= 1000000000L;
+        ts.tv_sec++;
+    }
+}
+
 bool PeriodicThread::_run()
 {
     if (_period_usec == 0) {
         return false;
     }
 
-    uint64_t next_run_usec = AP_HAL::micros64() + _period_usec;
+    // establish first absolute deadline
+    struct timespec next;
+    clock_gettime(CLOCK_MONOTONIC, &next);
+    add_us(next, _period_usec);
 
     while (!_should_exit) {
-        uint64_t dt = next_run_usec - AP_HAL::micros64();
-        if (dt > _period_usec) {
-            // we've lost sync - restart
-            next_run_usec = AP_HAL::micros64();
-        } else {
-            Scheduler::from(hal.scheduler)->microsleep(dt);
-        }
-        next_run_usec += _period_usec;
+        // sleep until the absolute deadline
+        int ret;
+        do {
+            ret = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &next, nullptr);
+        } while (ret == EINTR);
 
+        // run the task
         _task();
+
+        // schedule next absolute deadline
+        add_us(next, _period_usec);
     }
 
     _started = false;
     _should_exit = false;
-
     return true;
 }
 

@@ -1,3 +1,5 @@
+#include <AP_HAL_Linux/IOMCU_B.h>
+
 #include "AP_Vehicle_config.h"
 
 #if AP_VEHICLE_ENABLED
@@ -27,6 +29,10 @@
 extern AP_IOMCU iomcu;
 #endif
 #include <AP_Scripting/AP_Scripting.h>
+
+//TODO #if HAL_IOMCU_B_ENABLED
+#include <AP_HAL_Linux/IOMCU_B.h>
+//TODO #endif
 
 #define SCHED_TASK(func, rate_hz, max_time_micros, prio) SCHED_TASK_CLASS(AP_Vehicle, &vehicle, func, rate_hz, max_time_micros, prio)
 
@@ -611,6 +617,18 @@ SCHED_TASK_CLASS arguments:
 
  */
 const AP_Scheduler::Task AP_Vehicle::scheduler_tasks[] = {
+#if HAL_GYROFFT_ENABLED
+    FAST_TASK_CLASS(AP_GyroFFT,    &vehicle.gyro_fft,       sample_gyros),
+#endif
+//TODO #if HAL_IOMCU_B_ENABLED
+    {
+        .function = FUNCTOR_BIND(&iomcu_b, &IOMCU2::IOMCU_B::sync, void),\
+        AP_FAST_NAME_INITIALIZER(classname, func)
+        .rate_hz = 0,
+        .max_time_micros = 0,
+        .priority = AP_Scheduler::FAST_TASK_PRI2 //lower priority to allow it to run last
+    },
+//TODO #endif
 #if HAL_GYROFFT_ENABLED
     FAST_TASK_CLASS(AP_GyroFFT,    &vehicle.gyro_fft,       sample_gyros),
 #endif
