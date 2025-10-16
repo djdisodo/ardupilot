@@ -47,7 +47,7 @@
 #include "Util_RPI.h"
 #include "CANSocketIface.h"
 
-#include "RCOutput_virtual.h"
+#include "RCOutput_iomcu_b.h"
 
 using namespace Linux;
 
@@ -243,7 +243,7 @@ static RCOutput_Sysfs_Table rcoutDriver((RCOutput_Sysfs_Table::ch_t []){
 	{ .chip = 1, .channel = 0 },
 }, 8);
 #else
-static IOMCU2::RCOutput_virtual rcoutDriver;
+static IOMCU2::RCOutput_iomcu_b rcoutDriver;
 //static Empty::RCOutput rcoutDriver;
 #endif
 

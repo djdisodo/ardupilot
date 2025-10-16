@@ -4,13 +4,19 @@
 
 #include "IOMCU_B.h"
 
-#define CHANNELS 32
+#define CHANNELS 16
 
 namespace IOMCU2 {
 
-class RCOutput_virtual: public AP_HAL::RCOutput {
+class RCOutput_iomcu_b: public AP_HAL::RCOutput {
+	//state
+	bool corked = false;
+
+	// RC Output
+	uint32_t enable_mask = 0;
+	uint16_t pwm_duration[CHANNELS] = {};
 public:
-    explicit RCOutput_virtual();
+    explicit RCOutput_iomcu_b();
 
 	void init() override;
 

@@ -8,19 +8,23 @@ using namespace IOMCU2;
 
 void IOMCU_B::init()  {
     spi_device = AP_HAL::get_HAL().spi->get_device(HAL_IOMCU_B);
+    spi_device->set_speed(AP_HAL::Device::SPEED_HIGH);
+    spi_device->register_periodic_callback(1000000UL / 2, FUNCTOR_BIND_MEMBER(&IOMCU_B::sync, void));
 }
 
 void IOMCU_B::sync() {
-    //should we have buffer preallocated?
-    uint8_t buffer[128];
-    uint8_t *cursor = buffer;
-    // big type first, aligned anyway
-    WRITE_VAR(cursor, rc_out.enable_mask);
-    WRITE_ARR(cursor, rc_out.pwm_duration);
-    spi_device->set_speed(AP_HAL::Device::SPEED_HIGH);
-    spi_device->set_chip_select(true);
-    spi_device->transfer_fullduplex(buffer, cursor - buffer);
-    spi_device->set_chip_select(false);
+    if (rc_semaphore.take(1)) {
+
+        SpiFrame frame {
+            1,
+            {},
+            rc_serialized
+        };
+        spi_device->transfer_fullduplex((uint8_t *)&frame, sizeof(frame));
+        rc_semaphore.give();
+    }
 }
+
+
 
 IOMCU_B iomcu_b{};
